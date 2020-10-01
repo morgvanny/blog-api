@@ -19,14 +19,13 @@ class PostsController < ApplicationController
   def create
     @user = User.find_or_create_by(username: params[:post][:username])
     @post = @user.posts.new(post_params)
-
-    if @post.save
+    if @user.save
       options = {
                   include: [:user]
                 }
       render json: PostSerializer.new(@post, options)
     else
-      render json: {errors: @post.errors.full_messages}, status: :unprocessable_entity
+      render json: {errors: {user: @user.errors.full_messages, post: @post.errors.full_messages}}, status: :unprocessable_entity
     end
   end
 
